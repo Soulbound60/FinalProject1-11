@@ -3,16 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/entryFragment">
+    app:startDestination="@id/mapFragment">
 
     <fragment
         android:id="@+id/entryFragment"
-        android:name="com.example.finalproject1_11.EntryFragment"
+        android:name="com.example.finalproject1_11.Views.EntryFragment"
         android:label="fragment_entry"
-        tools:layout="@layout/fragment_entry" />
+        tools:layout="@layout/fragment_entry" >
+        <action
+            android:id="@+id/action_entryFragment_to_viewFragment"
+            app:destination="@id/viewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/viewFragment"
-        android:name="com.example.finalproject1_11.ViewFragment"
+        android:name="com.example.finalproject1_11.Views.ViewFragment"
         android:label="fragment_view"
-        tools:layout="@layout/fragment_view" />
+        tools:layout="@layout/fragment_view" >
+        <action
+            android:id="@+id/action_viewFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_viewFragment_to_mapFragment2"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_viewFragment_to_entryFragment"
+            app:destination="@id/entryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.finalproject1_11.Views.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_viewFragment"
+            app:destination="@id/viewFragment" />
+    </fragment>
 </navigation>

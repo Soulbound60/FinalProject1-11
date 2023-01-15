@@ -9,8 +9,8 @@ data class LocationTable(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
     var name : String,
-    var note : String,
-    var longitude : Long,
-    var latitude : Long,
-    var whatKind : String
+    var note : String, // why visiting
+    var longitude : Float,
+    var latitude : Float,
+    var whatKind : String // is it a restaurant or private
     )
