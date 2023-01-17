@@ -6,6 +6,11 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="mainColor">#29707D</color>
+    <color name="mainColor1">#0D2529</color>
+
+
+    <color name="co9">#E3dfed</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primaryColor">#e1f5fe</color>
     <color name="primaryLightColor">#ffffff</color>

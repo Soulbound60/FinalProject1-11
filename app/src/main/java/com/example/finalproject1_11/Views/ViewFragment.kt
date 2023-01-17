@@ -24,6 +24,7 @@ class ViewFragment : Fragment() {
         binding.entryFrag.setOnClickListener {
             findNavController().navigate(R.id.action_viewFragment_to_entryFragment)
         }
+
         // Inflate the layout for this fragment
         return binding.root
     }
