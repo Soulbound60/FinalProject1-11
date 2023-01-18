@@ -9,11 +9,12 @@ class Repository (var Dao : LocationDAO) {
     suspend fun addLocation(location: LocationTable){
         Dao.addLocation(location)
     }
+
     suspend fun deleteLocation(location: LocationTable){
         Dao.deleteLocation(location)
     }
 
-    suspend fun updateCollege(location: LocationTable){
+    suspend fun updateLocation(location: LocationTable){
         Dao.updateLocation(location)
 
     }

@@ -10,7 +10,7 @@ data class LocationTable(
     var id: Int,
     var name : String,
     var note : String, // why visiting
-    var longitude : Float,
-    var latitude : Float,
+    var longitude : Double,
+    var latitude : Double,
     var whatKind : String // is it a restaurant or private
     )

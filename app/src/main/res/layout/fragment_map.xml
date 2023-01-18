@@ -22,7 +22,7 @@
 </fragment>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/Fbtn"
+        android:id="@+id/fBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -30,6 +30,7 @@
         tools:srcCompat="@tools:sample/avatars"
         android:layout_marginBottom="60dp"
         android:layout_marginStart="20dp"
+        android:src="@drawable/add_viktor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -49,25 +50,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="2"
-            >
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/mapFrag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="map Frag" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/homeFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
 
-                android:src="@drawable/home_image"
                 android:text="Home" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/entryFrag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/home_image"
                 android:layout_weight="1"
                 android:text="Entry Frag" />
         </LinearLayout>

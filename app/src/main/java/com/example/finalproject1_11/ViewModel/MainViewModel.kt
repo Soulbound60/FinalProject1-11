@@ -21,8 +21,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     init {
         // data base initiate
         locationDB = LocationDataBase.getDataBase(application)
-        // the dao inside the data base got initiate
-        dao = locationDB.collegeDAO()
+        dao = locationDB.LocationDAO()
+        dao = locationDB.LocationDAO()
+        repository = Repository(dao)
 
     }
 
@@ -35,7 +36,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         return repository.getDataBase()
     }
     // Add
-    fun addCollege(locationTable: LocationTable){
+    fun addLocation(locationTable: LocationTable){
         CoroutineScope(Dispatchers.IO).launch {
             repository.addLocation(locationTable)
 
@@ -52,7 +53,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     // Update
     fun updateCollege(locationTable: LocationTable){
         CoroutineScope(Dispatchers.IO).launch {
-            repository.updateCollege(locationTable)
+            repository.updateLocation(locationTable)
         }
     }
 

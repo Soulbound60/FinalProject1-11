@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [LocationTable::class], version = 1, exportSchema = false)
 abstract class LocationDataBase(): RoomDatabase(){
-    abstract fun collegeDAO(): LocationDAO
+    abstract fun LocationDAO(): LocationDAO
 
     companion object // type this just to look smart
     {

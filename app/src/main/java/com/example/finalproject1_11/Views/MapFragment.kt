@@ -1,8 +1,5 @@
 package com.example.finalproject1_11.Views
 
-import android.app.Application
-import android.content.DialogInterface
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationRequest
 import androidx.fragment.app.Fragment
@@ -10,25 +7,23 @@ import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras.Empty.equals
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.finalproject1_11.Model.ArgsLocation
+import com.example.finalproject1_11.Model.DB.LocationTable
 import com.example.finalproject1_11.R
 import com.example.finalproject1_11.ViewModel.LatLngFlag
 import com.example.finalproject1_11.ViewModel.MainViewModel
 
 import com.example.finalproject1_11.databinding.FragmentMapBinding
+import com.example.finalproject1_11.databinding.FragmentViewBinding
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.Status
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,19 +32,16 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
-    lateinit var binding1 : FragmentMapBinding
+    lateinit var binding1 : FragmentViewBinding
     lateinit var mMap: GoogleMap
     lateinit var x: LatLngFlag
     lateinit var viewModel: MainViewModel
     var checlClear = false
+     private val args by navArgs<MapFragmentArgs>()
+
 
     //1
     private var mMap1: GoogleMap? = null
@@ -65,50 +57,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
 
+
         binding = FragmentMapBinding.inflate(layoutInflater)
         // initiate viewModel
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         // initiate MapFragment
+        val lati = args.cordinates?.lati
+        val longi = args.cordinates?.longi
+        //Log.d("ABDULLAZIZ","$lati. $longi")
+        Log.d("ABDULLAZIZ"," $lati $longi")
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-         //initiate AutoComplete
-        //var  ="AIzaSyCYeqxPF4oX57ZOZKEQ_6oc2P2o-Z4eOBk"
-//        var apiKey : String = getString(R.string.api_key)
-//        if (!Places.isInitialized()){
-//            Places.initialize(context,apiKey)
-//        }
-//        var placesClient = Places.createClient(requireContext())
-
-         //Initialize the AutocompleteSupportFragment.
-
-
-//        var fragmentManager: FragmentManager = (activity as FragmentActivity).supportFragmentManager
-//        val autocompleteFragment = fragmentManager.findFragmentById(R.id.autocomplete_fragment)
-//                    as AutocompleteSupportFragment
-
-//        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
-//            LatLng(21.444815, 39.820301),
-//                    LatLng(21.444815, 39.820301)
-//        ))
-//
-//        // Specify the types of place data to return.
-//        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-//
-//        // Set up a PlaceSelectionListener to handle the response.
-//        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-//            override fun onPlaceSelected(place: Place) {
-//                // TODO: Get info about the selected place.
-//
-//                Log.i("TAG", "Place: ${place.name}, ${place.id}")
-//            }
-//
-//            override fun onError(status: Status) {
-//                // TODO: Handle the error.
-//                Log.i("TAG", "An error occurred: $status")
-//            }
-//        })
-
+        binding.fBtn.setOnClickListener {
+            if (checlClear){
+               popUpMenu(x)
+            }else{
+                Toast.makeText(requireActivity(),"Pls Pick a Location", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.homeFragment.setOnClickListener {
+            findNavController().navigate(R.id.action_mapFragment_to_viewFragment)
+        }
 
         return binding.root
     }
@@ -117,28 +87,42 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         var makkah = LatLng(21.444815, 39.820301)
+
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(makkah))
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+
         mMap.setOnMapClickListener {
             x = LatLngFlag(it.latitude, it.longitude, true)
+
             mMap.moveCamera(CameraUpdateFactory.newLatLng(it))
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15f), 2000, null)
+//            mMap.addMarker(MarkerOptions().position(it).title("Here ?"))
+//            checlClear = true
             if (checlClear == false) {
                 mMap.addMarker(MarkerOptions().position(it).title("Here ?"))
+                x = LatLngFlag(it.latitude, it.longitude, true)
                 checlClear = true
-                Log.d("TAG", "marker done $checlClear")
+                Log.d("TAG", "newLatLAng ${x.lat} ${x.lng}")
             } else {
                 putMarker(mMap)
                 Log.d("TAG", "marker deleted $checlClear")
             }
-//            binding.fBtn.setOnClickListener {
-//                if (checlClear){
-//                    //Toast.makeText(requireContext(),"Pup Up Dialog", Toast.LENGTH_SHORT).show()
-//                }else{
-//                    Toast.makeText(requireContext(),"Pls Pick a Location", Toast.LENGTH_SHORT).show()
-//                }
-//            }
 
+
+
+        }
+        if (args.cordinates!=null){
+            val lati = args.cordinates!!.lati
+            val longi = args.cordinates!!.longi
+            Log.d("ABDULLAZIZ","afterNull $lati $longi")
+            var detour = LatLng(lati,longi)
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(detour))
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15f), 2000, null)
+            mMap.addMarker(MarkerOptions().position(detour).title("Here ?"))
+            checlClear = true
+
+            makkah = LatLng(lati, longi)
         }
     }
 
@@ -146,6 +130,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap.clear()
         checlClear = false
     }
+
 
 
 //    internal inner class InfoWindowActivity : AppCompatActivity(),
@@ -169,50 +154,76 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //
 
 
-     fun DialogBuilder(){
-         var color = ""
-         val inflter = LayoutInflater.from(requireContext())
-         val layout = inflter.inflate(R.layout.dialog_pop, null)
-         val editTitle = layout.findViewById<EditText>(R.id.taskET)
-         val editDesc = layout.findViewById<EditText>(R.id.descriptionET)
-         editTitle.setText("task.taskName")
-         editDesc.setText("task.taskDescription")
-         val refPri = layout.findViewById<Button>(R.id.imgRed)
-         val greenPri = layout.findViewById<Button>(R.id.imgGreen)
-         val yellowPri = layout.findViewById<Button>(R.id.imgYellow)
+
+    fun popUpMenu(x: LatLngFlag) {
+        val inflater = LayoutInflater.from(requireActivity())
+        val layout = inflater.inflate(R.layout.dialog_pop,null)
+        // Button's
+        var type = " "
+        var cancelBtn = layout.findViewById<Button>(R.id.cancelBtn)
+        var saveBtn = layout.findViewById<Button>(R.id.saveBtn)
+        // Text's
+        var title = layout.findViewById<TextView>(R.id.title)
+        title.text = "Add New Location"
+        var locationName = layout.findViewById<EditText>(R.id.locationName)
+        var discription = layout.findViewById<EditText>(R.id.descriptionTxt)
+        // img's
+        var resturantIMG = layout.findViewById<ImageView>(R.id.resturantIMG)
+        var familyIMG = layout.findViewById<ImageView>(R.id.familyIMG)
+        var houseIMG = layout.findViewById<ImageView>(R.id.homeIMG)
+        var viktorHouse =
+        resturantIMG.setOnClickListener {
+            type = "restaurant"
+            resturantIMG.setImageResource(R.drawable.estaurant1)
+            // changing other twoo
+            familyIMG.setImageResource(R.drawable.family)
+            houseIMG.setImageResource(R.drawable.house)
+            Log.d("TAGTAG","should be restaurant : $type")
+        }
+        familyIMG.setOnClickListener {
+            type = "family"
+            familyIMG.setImageResource(R.drawable.family1)
+            // changing other twoo
+            resturantIMG.setImageResource(R.drawable.restaurant)
+            houseIMG.setImageResource(R.drawable.house)
+            Log.d("TAGTAG","should be family : $type")
+        }
+        houseIMG.setOnClickListener {
+            type = "house"
+            houseIMG.setImageResource(R.drawable.home_image1)
+            // changing other twoo
+            resturantIMG.setImageResource(R.drawable.restaurant)
+            familyIMG.setImageResource(R.drawable.family)
+            Log.d("TAGTAG","should be house : $type")
+        }
+
+        val dialogBuilder = AlertDialog.Builder(requireActivity())
+                var dialog = dialogBuilder.create()
+
+        saveBtn.setOnClickListener {
+            if (locationName.text.isNotEmpty()&&discription.text.isNotEmpty())
+            addLocation(LocationTable(0,locationName.text.toString(), discription.text.toString(),x.lng,x.lat,type)
+
+            )else{
+                Toast.makeText(requireActivity(),"fill the the info pls",Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            dialog.dismiss()
+        }
+       cancelBtn.setOnClickListener {
+           dialog.dismiss()
+       }
 
 
-         refPri.setOnClickListener {
-             refPri.setBackgroundColor(Color.parseColor("#ff5d73"))
-             color = "0red"
-             greenPri.setBackgroundColor(Color.GRAY)
-             yellowPri.setBackgroundColor(Color.GRAY)
-         }
-         greenPri.setOnClickListener {
-             greenPri.setBackgroundColor(Color.parseColor("#b7ffc4"))
-             color = "2green"
-             refPri.setBackgroundColor(Color.GRAY)
-             yellowPri.setBackgroundColor(Color.GRAY)
-         }
-         yellowPri.setOnClickListener {
-             yellowPri.setBackgroundColor(Color.parseColor("#fff6c6"))
-             color = "1yellow"
-             refPri.setBackgroundColor(Color.GRAY)
-             greenPri.setBackgroundColor(Color.GRAY)
-         }
-         when{
-//             task.priority=="0red" ->refPri.setBackgroundColor(Color.RED)
-//             task.priority=="1yellow" ->yellowPri.setBackgroundColor(Color.YELLOW)
-//             task.priority=="2green" ->greenPri.setBackgroundColor(Color.GREEN)
-         }
 
-
-         val dialogBuilder = AlertDialog.Builder(requireContext())
-
-
-
-
-     } //pop up fun.
+        //val alert = dialogBuilder.create()
+        dialog.setView(layout)
+        //alert.setTitle("Test")
+        dialog.show()
+    } //pop up fun.
+    fun addLocation(location: LocationTable){
+        viewModel.addLocation(location)
+    }
 }
 
 
