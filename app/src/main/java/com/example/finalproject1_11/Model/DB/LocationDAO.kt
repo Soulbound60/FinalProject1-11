@@ -7,6 +7,10 @@ interface LocationDAO {
     @Query("select * from location order by id")
     fun getLiveDB(): LiveData<List<LocationTable>>
 
+
+    @Query("select * from location order by id")
+    fun getlist(): List<LocationTable>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addLocation(location : LocationTable)
 

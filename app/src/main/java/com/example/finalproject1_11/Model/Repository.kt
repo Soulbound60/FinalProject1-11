@@ -10,6 +10,10 @@ class Repository (var Dao : LocationDAO) {
         Dao.addLocation(location)
     }
 
+    suspend fun getList():List<LocationTable>{
+        return Dao.getlist()
+    }
+
     suspend fun deleteLocation(location: LocationTable){
         Dao.deleteLocation(location)
     }

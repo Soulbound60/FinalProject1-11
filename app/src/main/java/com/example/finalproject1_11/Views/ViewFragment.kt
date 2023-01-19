@@ -1,12 +1,17 @@
 package com.example.finalproject1_11.Views
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.finalproject1_11.Model.ArgsLocation
 import com.example.finalproject1_11.Model.DB.LocationTable
@@ -14,10 +19,23 @@ import com.example.finalproject1_11.R
 import com.example.finalproject1_11.ViewModel.LocationRV
 import com.example.finalproject1_11.ViewModel.MainViewModel
 import com.example.finalproject1_11.databinding.FragmentViewBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 class ViewFragment : Fragment(), LocationRV.ClickListner {
     lateinit var binding: FragmentViewBinding
     lateinit var viewModel: MainViewModel
+    var apiKey = "AIzaSyCYeqxPF4oX57ZOZKEQ_6oc2P2o-Z4eOBk"
+    lateinit var locationManager: LocationManager
+    var deviceLat = 24.801557
+    var deviceLong = 46.677208
+
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +47,7 @@ class ViewFragment : Fragment(), LocationRV.ClickListner {
         val adapter = LocationRV(this)
         binding.locationRV.adapter = adapter
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
+        //0 out 10 ?
         binding.mapFrag.setOnClickListener {
             findNavController().navigate(R.id.action_viewFragment_to_mapFragment)
         }
@@ -39,10 +57,88 @@ class ViewFragment : Fragment(), LocationRV.ClickListner {
         viewModel.getDB().observe(viewLifecycleOwner) { locationList ->
             adapter.submitList(locationList)
         }
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        //  locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//------------------------------------------------------//
+        val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        // vid
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        fechLocation()
+        //**********
+
 
         return binding.root
 
     }
+
+    //@SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission")
+    override fun fechLocation() {
+        val task = fusedLocationProviderClient.lastLocation
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                101
+            )
+            return
+        }
+        task.addOnSuccessListener {
+            if (it != null) {
+                //deviceLat = it.latitude
+               // deviceLong = it.longitude
+
+                Toast.makeText(requireContext(), "${it.latitude}${it.longitude}", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+//    fun getDistance(distenation : String, lat:Double , lan : Double){
+//
+//        val apiClient = APIClient().getClient()
+//        if (apiClient != null) {
+//            // if the connection to the main page is good
+//            //1-
+//            val apiInterface = apiClient.create(Interface::class.java)
+//            //2-
+//            apiInterface.Search("makkah",).enqueue(object : Callback<College> {
+//                override fun onResponse(call: Call<College>, response: Response<College>) {
+//                    Log.d("TAG","Before the Null Check")
+//                    val body = response.body()
+//                    if (body != null) {
+//                        Log.d("TAG","Before the loop")
+//                        val collegelist1 = arrayListOf<CollegeItem>()
+////                    val photosList = response.body()
+//                        //mutableLiveCollege.postValue(collegelist1)
+//                        for (user in body){
+//                            Log.d("TAG","Inside the loop")
+//                            CollegeList.add(user)
+//                            Log.d("SOULBOUND","$user")
+//                            mutableLiveCollege.postValue(CollegeList)
+//                        }
+//
+//                    }
+//                }
+//                override fun onFailure(call: Call<College>, t: Throwable) {
+//                    Log.d("TAG", "onFailure: ${t.message}")
+//                }
+//
+//            })
+//        }
+//        }
 
 
     fun pupUpmenu() {
@@ -128,6 +224,19 @@ class ViewFragment : Fragment(), LocationRV.ClickListner {
 
     }
 
+    override fun CalDistance(lat: Double, long: Double): Double {
+
+        var distance = distance(lat, long, deviceLat.toDouble(), deviceLong.toDouble())
+        Log.d("TRUTH","lat :$lat, long : $long , DLat $deviceLat , DLOng $deviceLong")
+        var distance1 = distance.roundTo(3)
+        return distance1
+    }
+
+    fun Double.roundTo(numFractionDigits: Int): Double {
+        val factor = 10.0.pow(numFractionDigits.toDouble())
+        return (this * factor).roundToInt() / factor
+    }
+
     override fun deleteLocation(location: LocationTable) {
         viewModel.deleteLocation(location)
     }
@@ -135,8 +244,36 @@ class ViewFragment : Fragment(), LocationRV.ClickListner {
     override fun direction(location: LocationTable) {
         val latitude0 = location.latitude
         val longitude0 = location.longitude
-        val auction =  ViewFragmentDirections.actionViewFragmentToMapFragment(ArgsLocation(latitude0,longitude0))
+        val auction = ViewFragmentDirections.actionViewFragmentToMapFragment(
+            ArgsLocation(
+                latitude0,
+                longitude0
+            )
+        )
         findNavController().navigate(auction)
 
     }
+
+    private fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val theta = lon1 - lon2
+        var dist = (Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + (Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta))))
+        dist = Math.acos(dist)
+        dist = rad2deg(dist)
+        dist = dist * 60 * 1.1515
+        return dist * 1.6
+    }
+
+    private fun deg2rad(deg: Double): Double {
+        return deg * Math.PI / 180.0
+    }
+
+    private fun rad2deg(rad: Double): Double {
+        return rad * 180.0 / Math.PI
+    }
+
+
 }

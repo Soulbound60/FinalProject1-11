@@ -38,22 +38,26 @@ class LocationRV(var Click: ViewFragment) : ListAdapter<LocationTable, LocationR
         var location = getItem(position)
 
         holder.binding.apply {
+
             nameTxt.text = location.name
             summaryTxt.text = location.note
             nameTxt.text = location.name
             direction.setImageResource(R.drawable.directions)
             deleteImg.setImageResource(R.drawable.garbage)
+            var distanceKM = Click.CalDistance(location.latitude,location.longitude)
+            var strr = "${distanceKM.toString()} Km away"
+            distance.text = strr
             if (location.whatKind == "restaurant") {
                 //typeIMG.setImageResource(R.drawable.resturant)
                 //typeIMG.setImageDrawable(R.drawable.resturant.toDrawable())
-                typeIMG.setImageResource(R.drawable.location1)
+                typeIMG.setImageResource(R.drawable.estaurant1)
             }
             if (location.whatKind == "family") {
                 // typeIMG.setImageDrawable(R.drawable.gathering.toDrawable())
-                typeIMG.setImageResource(R.drawable.location1)
+                typeIMG.setImageResource(R.drawable.family1)
             }
             if (location.whatKind == "house") {
-                typeIMG.setImageResource(R.drawable.location1)
+                typeIMG.setImageResource(R.drawable.home_image1)
                 //typeIMG.setImageDrawable(R.drawable.directions.toDrawable())
             }
             deleteImg.setOnClickListener {
@@ -67,9 +71,10 @@ class LocationRV(var Click: ViewFragment) : ListAdapter<LocationTable, LocationR
     }
 
     interface ClickListner {
-
+        fun CalDistance(lat:Double,long:Double):Double
         fun deleteLocation(location: LocationTable)
         fun direction(location: LocationTable)
+        fun fechLocation()
 
     }
 

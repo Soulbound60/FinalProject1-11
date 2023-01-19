@@ -14,7 +14,7 @@ class APIClient {
             .create()
         //http://universities.hipolabs.com/search?name=Middlesex
         retrofit = Retrofit.Builder()
-            .baseUrl("http://universities.hipolabs.com/")
+            .baseUrl("https://maps.googleapis.com/maps/api/distancematrix/json?/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit

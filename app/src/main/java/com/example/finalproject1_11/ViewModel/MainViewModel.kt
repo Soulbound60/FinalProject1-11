@@ -35,6 +35,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         //CoroutineScope(Dispatchers.IO).launch {
         return repository.getDataBase()
     }
+
+    suspend fun getList():List<LocationTable> {
+        //CoroutineScope(Dispatchers.IO).launch {
+        return repository.getList()
+    }
     // Add
     fun addLocation(locationTable: LocationTable){
         CoroutineScope(Dispatchers.IO).launch {

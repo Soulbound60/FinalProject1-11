@@ -4,27 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@drawable/testgrad"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@color/co9"
         android:orientation="horizontal"
         android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:orientation="vertical">
 
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/nameTxt"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
@@ -32,7 +33,6 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="15dp"
                 android:textAlignment="center" />
-
             <TextView
                 android:textSize="22dp"
                 android:id="@+id/summaryTxt"
@@ -58,6 +58,7 @@
                 <TextView
                     android:id="@+id/distance"
                     android:textSize="22dp"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
@@ -69,6 +70,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
+
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:weightSum="9">
@@ -94,7 +96,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-
                 tools:srcCompat="@tools:sample/avatars" />
 
         </LinearLayout>

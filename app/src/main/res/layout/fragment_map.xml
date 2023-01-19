@@ -52,14 +52,18 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <ImageView
+                android:src="@drawable/locationvik1"
+                android:layout_gravity="center"
                 android:id="@+id/mapFrag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="map Frag" />
 
-            <Button
+            <ImageView
+                android:src="@drawable/homevik1"
+                android:layout_gravity="center"
                 android:id="@+id/homeFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +71,9 @@
 
                 android:text="Home" />
 
-            <Button
+            <ImageView
+                android:src="@drawable/searchvik1"
+                android:layout_gravity="center"
                 android:id="@+id/entryFrag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
